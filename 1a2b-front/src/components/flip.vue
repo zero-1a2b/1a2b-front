@@ -18,7 +18,7 @@ export default {
     mounted(){
         let counter = new Counter('.numCounter',{
             direction: 'rtl',
-            delay: 1,
+            delay: 3,
             digits: 4
         });
         counter.count(1829);
@@ -26,8 +26,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-$digitHeight : 90px;
+<style lang="scss" >
+$digitHeight : 70px;
 $speed       : .5s;
 $baseColor   : #55b9f3;
 $textColor   : white;
@@ -83,16 +83,6 @@ $countArr    : ' 0 1 2 3 4 5 6 7 A B ';
       }   
     }
     
-    // format number (US-format)
-    &:nth-last-child(3n):not(:first-child){
-      &::before{
-        content:",";
-        display:inline;
-        font-size: 1.1em; 
-        opacity: .6;
-        color: white;
-      }
-    }
   }
 } 
 

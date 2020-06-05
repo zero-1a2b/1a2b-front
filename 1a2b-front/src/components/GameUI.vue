@@ -57,12 +57,12 @@ export default {
 }
 
 .player-status{
-  height: 25%;
+  height: 30%;
     border: 10px;
 }
 
 .flip{
-    height: 25%;
+    height: 20%;
     border: 10px;
 }
 
