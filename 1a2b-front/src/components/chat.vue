@@ -9,7 +9,7 @@
         <div class="message-list">
             <el-scrollbar style="height:inherit;">
                 <ul class="msg-cont">
-                <li v-for="message in msgList" :key="message.msg_index">
+                <li v-for="message in showList" :key="message.msg_index">
                     {{message.playerName + ' : ' + message.msg}}
                 </li>
                 </ul>
@@ -32,51 +32,61 @@ export default {
             msgList: [
                 {
                     msg_index: 1,
-                    playerName: 'test',
-                    msg: 'hello world.'
+                    message_type: 1,
+                    playerName: '系统',
+                    msg: '轮到 玩家1 猜数字'
                 },
                 {
                     msg_index: 2,
-                    playerName: 'test',
-                    msg: 'hello world.'
+                    message_type: 0,
+                    playerName: '玩家1',
+                    msg: '3154'
                 },
                 {
                     msg_index: 3,
-                    playerName: 'test',
-                    msg: 'hello world.'
+                    message_type: 1,
+                    playerName: '系统',
+                    msg: '玩家1： 3154   1A1B'
                 },
                 {
                     msg_index: 4,
+                    message_type: 0,
                     playerName: 'test',
                     msg: 'hello world.'
                 },
                 {
                     msg_index: 5,
+                    message_type: 0,
                     playerName: 'test',
                     msg: 'hello world.'
                 },
                 {
                     msg_index: 6,
+                    message_type: 0,
                     playerName: 'test',
                     msg: 'hello world.'
                 },
                 {
                     msg_index: 7,
+                    message_type: 0,
                     playerName: 'test',
-                    msg: 'hello world.'
+                    msg: 'hello world.111111'
                 },
                 {
                     msg_index: 8,
+                    message_type: 0,
                     playerName: 'test',
                     msg: 'hello world.'
                 },
                 {
                     msg_index: 9,
+                    message_type: 0,
                     playerName: 'test',
                     msg: 'hello world.'
                 },
                 {
                     msg_index: 10,
+                    message_type: 0,
                     playerName: 'test',
                     msg: 'hello world.'
                 },
@@ -86,6 +96,17 @@ export default {
     methods: {
         sendMsg: function(){
             return 0;
+        }
+    },
+    computed: {
+        showList: function () {
+            if (this.filter === true){
+                return this.msgList.filter( (msg) => {
+                    return msg.message_type === 1
+                })
+            }else{
+                return this.msgList
+            }
         }
     }
 }
@@ -121,6 +142,9 @@ export default {
     list-style-type: none;
     margin: 0px;
     padding: 0px;
+    > li{
+        display: block;
+    }
 }
 
   .btn-group-custom .btn {

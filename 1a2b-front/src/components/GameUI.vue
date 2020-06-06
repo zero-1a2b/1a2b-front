@@ -7,7 +7,7 @@
               </el-card>
             </el-col>
             <el-col :span="6" style="float:right; padding:0;">
-              <el-button style="float:right;" type="danger">离开</el-button>
+              <el-button style="float:right; margin: 0 0 0 0 " type="danger">离开</el-button>
             </el-col>
           </el-row>
         <div class="flip">
@@ -45,6 +45,7 @@ export default {
 
 .game-head{
     height: 15%;
+    width: 100%;
     border: 10px;
     margin: 0;
     padding: 0;

@@ -2,12 +2,22 @@
     <div class="game_start">
     <div id="game_title"> 1A2B</div>
     <div id="game_logo">(这里放个zero娘的logo)</div>
-    <el-row >
-      <el-button class="game_button" type="primary" round>开始游戏</el-button>
+    <el-row>
+      <el-button class="game_button" type="primary" round @click="click_start">开始游戏</el-button>
     </el-row>
     <el-row >
       <el-button  class="game_button" type="warning" round @click="show_rule" >规则介绍</el-button>
     </el-row>
+    <el-row>
+      <el-button class="game_button" type="info" round @click="game_set">游戏设置 </el-button>
+    </el-row>
+    <el-dialog title="选择游戏" :visible.sync="choose_game" width="80%" class="choose-game">
+      <span>新建一个游戏或者通过房间号加入游戏</span>
+      <div style="padding: 20px 0 20px 0">
+        <el-button type="success" style="display:inline" @click="create_game">创建游戏</el-button>
+        <el-button type="primary" style="display:inline" @click="join_game">加入游戏</el-button>
+      </div>
+    </el-dialog>
     </div>
 </template>
 
@@ -17,15 +27,60 @@ export default {
   name: 'GameStart',
   data () {
     return {
-      rule_text: Config.rule_text
+      rule_text: Config.rule_text,
+      player_name: '',
+      choose_game: false
     }
   },
   methods: {
     show_rule: function () {
       this.$alert(this.rule_text, '游戏规则', {
         confirmButtonText: '确定',
-        customClass: 'rule_box',
         callback: action => {}
+      })
+    },
+    game_set: function (callback) {
+      this.$prompt('请输入玩家名', '游戏设置', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(({ value }) => {
+        this.player_name = value
+        this.$message({
+          type: 'success',
+          message: '设置成功'
+        })
+        callback()
+      }).catch(() => {
+      })
+    },
+    click_start: function () {
+      if (this.player_name === '') {
+        this.game_set(this.show_choose_game)
+      } else {
+        this.show_choose_game()
+      }
+    },
+    show_choose_game: function () {
+      this.choose_game = true
+    },
+    join_game: function () {
+      this.choose_game = false
+      this.$prompt('请输入房间号', '加入房间', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '加入房间成功'
+        })
+      }).catch(() => {
+      })
+    },
+    create_game: function () {
+      this.choose_game = false
+      this.$message({
+        type: 'success',
+        message: ' 创建游戏成功'
       })
     }
   }
@@ -35,8 +90,11 @@ export default {
 <style >
 
 .game_button{
-  margin: 50px;
+  margin: 20px;
   font-size: 25px;
+}
+
+.choose-game{
 }
 
 .game_start{
