@@ -6,24 +6,33 @@
       <el-button class="game_button" type="primary" round>开始游戏</el-button>
     </el-row>
     <el-row >
-      <el-button  class="game_button" type="warning" round>规则介绍</el-button>
+      <el-button  class="game_button" type="warning" round @click="show_rule" >规则介绍</el-button>
     </el-row>
     </div>
 </template>
 
 <script>
+import {Config} from '../js/config'
 export default {
   name: 'GameStart',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      rule_text: Config.rule_text
+    }
+  },
+  methods: {
+    show_rule: function () {
+      this.$alert(this.rule_text, '游戏规则', {
+        confirmButtonText: '确定',
+        customClass: 'rule_box',
+        callback: action => {}
+      })
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style >
 
 .game_button{
   margin: 50px;
@@ -31,6 +40,7 @@ export default {
 }
 
 .game_start{
+  height: inherit;
   margin: 0;
   padding: 0;
   border: 0;
@@ -38,7 +48,11 @@ export default {
 
 #game_logo{
   color: antiquewhite;
-  margin: 0 0 80px 0;
+  margin: 0 0 50px 0;
+}
+
+.el-message-box{
+  width: auto !important;
 }
 
 #game_title{

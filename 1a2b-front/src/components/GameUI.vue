@@ -70,4 +70,8 @@ export default {
   height: inherit;
 }
 
+.el-message-box{
+  width: 300px ;
+}
+
 </style>
