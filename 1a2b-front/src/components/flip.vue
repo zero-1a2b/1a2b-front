@@ -12,16 +12,22 @@ import {Counter} from '../js/counter';
 export default {
     data(){
         return{
-            foo: ''
+            foo: '',
+            count_num: 1829,
+            counter: ''
         }
     },
     mounted(){
-        let counter = new Counter('.numCounter',{
+        this.counter = new Counter('.numCounter',{
             direction: 'rtl',
             delay: 3,
             digits: 4
         });
-        counter.count(1829);
+    },
+    watch: {
+      count_num: function(){
+        this.counter.count(this.count_num)
+      }
     }
 }
 </script>

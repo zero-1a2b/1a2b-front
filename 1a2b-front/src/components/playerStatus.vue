@@ -1,7 +1,7 @@
 <template>
     <div class="status">
         <div class="player" v-for="player in players" :key="player.player_num">
-            <el-tooltip effect="dark" content="????" placement="top-start">
+            <el-tooltip effect="dark" :content="player.player_name" placement="top-start">
             <el-avatar shape="circle" :size="50" :src="player.avatar"></el-avatar>
             </el-tooltip>
             <span class="player-name" style="display: block;"> {{player.player_name}} </span>

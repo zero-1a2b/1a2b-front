@@ -7,7 +7,7 @@
               </el-card>
             </el-col>
             <el-col :span="6" style="float:right; padding:0;">
-              <el-button style="float:right; margin: 0 0 0 0 " type="danger">离开</el-button>
+              <el-button style="float:right; margin: 0 0 0 0 " type="danger" @click="leave_room">离开</el-button>
             </el-col>
           </el-row>
         <div class="flip">
@@ -33,6 +33,21 @@ export default {
     return {
       msg: '',
       room_id: '114514'
+    }
+  },
+  methods: {
+    leave_room: function () {
+      this.$confirm('确定要离开游戏吗？', '离开游戏', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '离开房间!'
+        })
+      }).catch(() => {
+      })
     }
   }
 }
@@ -71,8 +86,10 @@ export default {
   height: inherit;
 }
 
-.el-message-box{
-  width: 300px ;
-}
+</style>
 
+<style>
+.el-message-box{
+  width: auto !important;
+}
 </style>

@@ -16,7 +16,7 @@
             </el-scrollbar>
         </div>
         <div class="message-input">
-            <el-input v-model="msg" placeholder="来聊些什么吧~"></el-input>
+            <el-input v-model="msg" placeholder="来聊些什么吧~" @keyup.enter.native="sendMsg"></el-input>
         </div>
     </div>
 </template>
@@ -29,6 +29,7 @@ export default {
         return{
             filter: false,
             msg:'',
+            msg_counter:10,
             msgList: [
                 {
                     msg_index: 1,
@@ -95,7 +96,16 @@ export default {
     },
     methods: {
         sendMsg: function(){
-            return 0;
+            /* Demo Only */
+            this.msg_counter += 1;
+            let newMessage = {
+                msg_index: this.msg_counter,
+                message_type:0,
+                playerName: 'test',
+                msg: this.msg
+            }
+            this.msgList.push(newMessage)
+            this.msg = ''
         }
     },
     computed: {
