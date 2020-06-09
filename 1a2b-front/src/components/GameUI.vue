@@ -26,13 +26,12 @@
 import ChatBoard from './chat'
 import FlipBoard from './flip'
 import StatusBoard from './playerStatus'
+import {mapState} from 'vuex'
 export default {
   name: 'GameUI',
   components: {ChatBoard, FlipBoard, StatusBoard},
   data () {
     return {
-      msg: '',
-      room_id: '114514'
     }
   },
   methods: {
@@ -49,6 +48,11 @@ export default {
       }).catch(() => {
       })
     }
+  },
+  computed: {
+    ...mapState([
+      'room_id'
+    ])
   }
 }
 </script>

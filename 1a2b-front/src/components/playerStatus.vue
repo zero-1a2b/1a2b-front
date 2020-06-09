@@ -2,7 +2,7 @@
     <div class="status">
         <div class="player" v-for="player in players" :key="player.player_num">
             <el-tooltip effect="dark" :content="player.player_name" placement="top-start">
-            <el-avatar shape="circle" :size="50" :src="player.avatar"></el-avatar>
+            <el-avatar shape="circle" :size="50" :src="avatar_type[player.is_ready]"></el-avatar>
             </el-tooltip>
             <span class="player-name" style="display: block;"> {{player.player_name}} </span>
         </div>
@@ -14,11 +14,18 @@
 </template>
 
 <script>
+import {Config} from '../js/config'
+
 export default {
 /* eslint-disable */
     data(){
         return{
-            start_status: true,
+            max_player: Config.max_player,
+            current_player: 1,
+            avatar_type: [
+                require('../assets/avatar.png'),
+                require('../assets/avatar.png')
+            ],
             ready:{
                 is_ready:true,
                 name: '准备',
@@ -91,13 +98,13 @@ export default {
             }
         }
     },
-    watch: {
+    computed: {
         start_status: function(){
-            let result = 0;
+            var result = 0;
             for( var player in this.players ){
-                result = result && player.is_ready;
+                result += this.players[player].is_ready;
             }
-            return (result == 1)? false: true;
+            return (result == this.current_player)? false: true;
         }
     }
 }
@@ -113,5 +120,6 @@ export default {
 .button-status{
     display: inline-block;
 }
+
 
 </style>

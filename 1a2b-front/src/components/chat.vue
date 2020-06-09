@@ -23,15 +23,32 @@
 
 <script>
 /* eslint-disable */
+import {mapState} from 'vuex'
 export default {
     name: "ChatBoard",
     data(){
         return{
             filter: false,
-            msg:'',
-            msg_counter:10,
-            msgList: [
-                {
+            msg: '',
+        }
+    },
+    methods: {
+        sendMsg: function(){
+            /* Demo Only */
+            this.msg_counter += 1;
+            let newMessage = {
+                msg_index: this.msg_counter,
+                message_type:0,
+                playerName: 'test',
+                msg: this.msg
+            }
+            this.msgList.push(newMessage)
+            this.msg = ''
+        }
+    },
+    mounted(){
+        this.$store.commit('SET_MSGLIST',
+                [{
                     msg_index: 1,
                     message_type: 1,
                     playerName: '系统',
@@ -90,25 +107,12 @@ export default {
                     message_type: 0,
                     playerName: 'test',
                     msg: 'hello world.'
-                },
-            ]
-        }
-    },
-    methods: {
-        sendMsg: function(){
-            /* Demo Only */
-            this.msg_counter += 1;
-            let newMessage = {
-                msg_index: this.msg_counter,
-                message_type:0,
-                playerName: 'test',
-                msg: this.msg
-            }
-            this.msgList.push(newMessage)
-            this.msg = ''
-        }
+                }])
     },
     computed: {
+        ...mapState([
+            'msgList'
+        ]),
         showList: function () {
             if (this.filter === true){
                 return this.msgList.filter( (msg) => {

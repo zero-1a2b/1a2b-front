@@ -23,12 +23,13 @@
 
 <script>
 import {Config} from '../js/config'
+import {mapState} from 'vuex'
+import axios from 'axios'
 export default {
   name: 'GameStart',
   data () {
     return {
       rule_text: Config.rule_text,
-      player_name: '',
       choose_game: false
     }
   },
@@ -44,7 +45,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(({ value }) => {
-        this.player_name = value
+        this.$store.commit('SET_PLAYER_NAME', value)
         this.$message({
           type: 'success',
           message: '设置成功'
@@ -78,11 +79,30 @@ export default {
     },
     create_game: function () {
       this.choose_game = false
-      this.$message({
-        type: 'success',
-        message: ' 创建游戏成功'
-      })
+      axios
+        .put(Config.create_room_url)
+        .then((response) => {
+          this.$store.commit('SET_ROOM_ID', response.data.id)
+          this.$store.commit('SET_ROOM_KEY', response.data.key)
+          this.$message({
+            type: 'success',
+            message: ' 创建游戏成功'
+          })
+          this.$router.push({
+            path: Config.room_url + this.room_id
+          })
+        })
+        .catch(error => {
+          console.log(error.stack)
+        })
     }
+  },
+  computed: {
+    ...mapState([
+      'player_name',
+      'room_key',
+      'room_id'
+    ])
   }
 }
 </script>
@@ -92,9 +112,6 @@ export default {
 .game_button{
   margin: 20px;
   font-size: 25px;
-}
-
-.choose-game{
 }
 
 .game_start{

@@ -12,7 +12,7 @@ export default new Router({
       component: GameStart
     },
     {
-      path: '/gameui',
+      path: '/game/:id',
       name: 'game_ui',
       component: GameUI
     }

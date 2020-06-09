@@ -1,5 +1,5 @@
 <template>
-    <div class="numCounter" data-value='1234567'>
+    <div class="numCounter" data-value='1829'>
     </div>
 </template>
 
@@ -8,21 +8,29 @@
 /* reference: https://codepen.io/vsync/pen/dlwgj */
 //import {Flip} from 'number-flip';
 import {Counter} from '../js/counter';
+import {mapState} from 'vuex'
 
 export default {
     data(){
         return{
             foo: '',
-            count_num: 1829,
             counter: ''
         }
     },
     mounted(){
         this.counter = new Counter('.numCounter',{
             direction: 'rtl',
-            delay: 3,
+            delay: 1,
             digits: 4
         });
+        setInterval(() => {
+          this.$store.commit('SET_COUNT_NUM', 6666)
+        }, 3000)
+    },
+    computed: {
+      ...mapState([
+        'count_num'
+      ])
     },
     watch: {
       count_num: function(){
