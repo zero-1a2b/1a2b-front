@@ -6,6 +6,13 @@ var SocketMsg = {
     }
     return JSON.stringify(msg)
   },
+  unready: function (playerName) {
+    let msg = {
+      'type': 'unready',
+      'player': playerName
+    }
+    return JSON.stringify(msg)
+  },
   start: function () {
     let msg = {
       'type': 'start'
@@ -39,6 +46,16 @@ var SocketMsg = {
   guess_1a2b: function (playerName, num, a, b) {
     num = num.join('')
     return '玩家 ' + playerName + ' 的数字：' + num + '. 结果：  ' + a + 'A ' + b + 'B'
+  },
+  chat_socket: function (msg, playerName) {
+    let result = {
+      'type': 'chat',
+      'msg': {
+        'name': playerName,
+        'msg': msg
+      }
+    }
+    return JSON.stringify(result)
   }
 }
 

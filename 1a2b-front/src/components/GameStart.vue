@@ -45,13 +45,24 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(({ value }) => {
-        this.$store.commit('SET_PLAYER_NAME', value)
+        if (value === null) {
+          throw new Error('NULL PLAYER NAME')
+        } else {
+          this.$store.commit('SET_PLAYER_NAME', value)
+          this.$message({
+            type: 'success',
+            message: '设置成功'
+          })
+        }
+        if (callback !== null) {
+          callback()
+        }
+      }).catch((error) => {
+        console.log(error)
         this.$message({
-          type: 'success',
-          message: '设置成功'
+          type: 'error',
+          message: '设置失败'
         })
-        callback()
-      }).catch(() => {
       })
     },
     click_start: function () {

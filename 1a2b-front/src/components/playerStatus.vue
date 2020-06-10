@@ -51,6 +51,7 @@ export default {
                 this.ready.is_ready = true;
                 this.ready.name = "准备";
                 this.ready.pattern = "primary"
+                this.$store.commit("UNREADY_STATE", {playerName: this.player_name})
             }
         },
         clickStart: function(){

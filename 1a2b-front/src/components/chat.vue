@@ -23,7 +23,7 @@
 
 <script>
 /* eslint-disable */
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import {SocketMsg} from '../js/socket_msg'
 export default {
     name: "ChatBoard",
@@ -31,20 +31,28 @@ export default {
         return{
             filter: false,
             msg: '',
+            guess_reg: /^[0-9]{4}$/
         }
     },
     methods: {
         sendMsg: function(){
+            if (this.guess_reg.exec(this.msg) && this.guess_state){
+                this.guessNum()
+            }
+            this.chatMsg()
+            this.msg = ''
+        },
+        guessNum: function (){
              this.$store.commit('GUESS_NUM', {
                  num: parseInt(this.msg),
                  playerName: this.player_name
              })
-            this.$store.commit('ADD_MSG', {
+        },
+        chatMsg: function () {
+            this.$store.commit('SEND_MESSAGE',{
                 msg: this.msg,
-                playerName: this.player_name,
-                messageType: 0
+                playerName: this.player_name
             })
-            this.msg = ''
         }
     },
     mounted(){
@@ -59,6 +67,9 @@ export default {
         ...mapState([
             'msgList',
             'player_name'
+        ]),
+        ...mapGetters([
+            'guess_state'
         ]),
         showList: function () {
             if (this.filter === true){

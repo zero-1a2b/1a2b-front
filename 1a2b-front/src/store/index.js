@@ -10,6 +10,7 @@ export const Store = new Vuex.Store({
     player_name: '',
     count_num: 1829,
     players: [],
+    guesser: 0,
     msgList: [],
     msgCounter: 1,
     room_key: 0,
@@ -34,6 +35,9 @@ export const Store = new Vuex.Store({
     },
     ROOM_KEY: state => {
       return state.room_key
+    },
+    guess_state: state => {
+      return state.players[state.guesser] === state.player_name
     }
   },
   mutations: {
@@ -68,6 +72,9 @@ export const Store = new Vuex.Store({
     READY_STATE: (state, payload) => {
       state.sock.send(SocketMsg.ready(payload.playerName))
     },
+    UNREADY_STATE: (state, payload) => {
+      state.sock.send(SocketMsg.unready(payload.playerName))
+    },
     START_STATE: (state, payload) => {
       state.sock.send(SocketMsg.start())
     },
@@ -76,6 +83,12 @@ export const Store = new Vuex.Store({
     },
     BIND_ONMESSAGE: (state, payload) => {
       state.sock.onmessage = payload
+    },
+    SET_GUESSER: (state, payload) => {
+      state.guesser = payload
+    },
+    SEND_MESSAGE: (state, payload) => {
+      state.sock.send(SocketMsg.chat_socket(payload.msg, payload.playerName))
     }
   }
 })

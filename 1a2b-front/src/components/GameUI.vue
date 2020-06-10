@@ -69,6 +69,14 @@ export default {
           messageType: 1
         })
       }
+      // Chat Event
+      if (data.type === 'chat') {
+        this.$store.commit('ADD_MSG', {
+          msg: data.msg.msg,
+          playerName: data.msg.name,
+          messageType: 0
+        })
+      }
       // Game Event
       if (data.type === 'game') {
         if (data.event.type === 'guess') {
