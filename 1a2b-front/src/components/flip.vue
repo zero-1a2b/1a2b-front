@@ -23,9 +23,6 @@ export default {
             delay: 1,
             digits: 4
         });
-        setInterval(() => {
-          this.$store.commit('SET_COUNT_NUM', 6666)
-        }, 3000)
     },
     computed: {
       ...mapState([

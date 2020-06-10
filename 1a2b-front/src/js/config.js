@@ -7,7 +7,11 @@ var Config = {
             '游戏由先完整猜出数字的人获得胜利（也就是先得到4A的玩家）。',
   max_player: 8,
   create_room_url: 'http://127.0.0.1:8085/rooms',
-  room_url: '/game/'
+  room_socket_url: function (id, playerName) {
+    return 'ws://127.0.0.1:8085/rooms/' + id + '/player?name=' + playerName
+  },
+  room_url: '/game/',
+  root_url: '/'
 }
 
 export {Config}

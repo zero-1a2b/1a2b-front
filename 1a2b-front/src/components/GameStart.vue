@@ -64,16 +64,23 @@ export default {
     show_choose_game: function () {
       this.choose_game = true
     },
+    enter_room: function () {
+      this.$router.push({
+        path: Config.room_url + this.room_id
+      })
+    },
     join_game: function () {
       this.choose_game = false
       this.$prompt('请输入房间号', '加入房间', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(({ value }) => {
+        this.$store.commit('SET_ROOM_ID', value)
         this.$message({
           type: 'success',
           message: '加入房间成功'
         })
+        this.enter_room()
       }).catch(() => {
       })
     },
@@ -88,9 +95,7 @@ export default {
             type: 'success',
             message: ' 创建游戏成功'
           })
-          this.$router.push({
-            path: Config.room_url + this.room_id
-          })
+          this.enter_room()
         })
         .catch(error => {
           console.log(error.stack)

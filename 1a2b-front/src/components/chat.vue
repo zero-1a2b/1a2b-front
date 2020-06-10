@@ -24,6 +24,7 @@
 <script>
 /* eslint-disable */
 import {mapState} from 'vuex'
+import {SocketMsg} from '../js/socket_msg'
 export default {
     name: "ChatBoard",
     data(){
@@ -34,84 +35,30 @@ export default {
     },
     methods: {
         sendMsg: function(){
-            /* Demo Only */
-            this.msg_counter += 1;
-            let newMessage = {
-                msg_index: this.msg_counter,
-                message_type:0,
-                playerName: 'test',
-                msg: this.msg
-            }
-            this.msgList.push(newMessage)
+             this.$store.commit('GUESS_NUM', {
+                 num: parseInt(this.msg),
+                 playerName: this.player_name
+             })
+            this.$store.commit('ADD_MSG', {
+                msg: this.msg,
+                playerName: this.player_name,
+                messageType: 0
+            })
             this.msg = ''
         }
     },
     mounted(){
-        this.$store.commit('SET_MSGLIST',
-                [{
-                    msg_index: 1,
-                    message_type: 1,
-                    playerName: '系统',
-                    msg: '轮到 玩家1 猜数字'
-                },
-                {
-                    msg_index: 2,
-                    message_type: 0,
-                    playerName: '玩家1',
-                    msg: '3154'
-                },
-                {
-                    msg_index: 3,
-                    message_type: 1,
-                    playerName: '系统',
-                    msg: '玩家1： 3154   1A1B'
-                },
-                {
-                    msg_index: 4,
-                    message_type: 0,
-                    playerName: 'test',
-                    msg: 'hello world.'
-                },
-                {
-                    msg_index: 5,
-                    message_type: 0,
-                    playerName: 'test',
-                    msg: 'hello world.'
-                },
-                {
-                    msg_index: 6,
-                    message_type: 0,
-                    playerName: 'test',
-                    msg: 'hello world.'
-                },
-                {
-                    msg_index: 7,
-                    message_type: 0,
-                    playerName: 'test',
-                    msg: 'hello world.111111'
-                },
-                {
-                    msg_index: 8,
-                    message_type: 0,
-                    playerName: 'test',
-                    msg: 'hello world.'
-                },
-                {
-                    msg_index: 9,
-                    message_type: 0,
-                    playerName: 'test',
-                    msg: 'hello world.'
-                },
-                {
-                    msg_index: 10,
-                    message_type: 0,
-                    playerName: 'test',
-                    msg: 'hello world.'
-                }])
+        this.$store.commit('SET_MSGLIST', [{
+            msg_index: 0,
+            message_type: 1,
+            playerName: '系统',
+            msg: '祝大家玩得开心~'
+        }])
     },
     computed: {
         ...mapState([
-            'msgList'
+            'msgList',
+            'player_name'
         ]),
         showList: function () {
             if (this.filter === true){

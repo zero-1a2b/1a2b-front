@@ -6,7 +6,9 @@ import router from './router'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+// import VueSocketIO from 'vue-socket.io'
 import {Store} from './store'
+// import {Config} from './js/config'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)

@@ -27,6 +27,8 @@ import ChatBoard from './chat'
 import FlipBoard from './flip'
 import StatusBoard from './playerStatus'
 import {mapState} from 'vuex'
+import {Config} from '../js/config'
+import {SocketMsg} from '../js/socket_msg'
 export default {
   name: 'GameUI',
   components: {ChatBoard, FlipBoard, StatusBoard},
@@ -45,14 +47,56 @@ export default {
           type: 'success',
           message: '离开房间!'
         })
+        this.$store.commit('DISCONNECT_SOCKET')
+        this.$router.push({
+          path: Config.root_url
+        })
       }).catch(() => {
       })
+    },
+    initWebSocket: function () {
+      this.$store.commit('CONNECT_SOCKET', {id: this.room_id, player_name: this.player_name})
+      this.$store.commit('BIND_ONMESSAGE', this.onMessageCallback)
+    },
+    onMessageCallback: function (event) {
+      let data = JSON.parse(event.data)
+      console.log(data)
+      // Start Event
+      if (data.type === 'game_started') {
+        this.$store.commit('ADD_MSG', {
+          msg: '游戏开始,每位玩家只有60s的时间猜数字',
+          playerName: '系统',
+          messageType: 1
+        })
+      }
+      // Game Event
+      if (data.type === 'game') {
+        if (data.event.type === 'guess') {
+          this.setFlip(data.event.a, data.event.b)
+          this.$store.commit('ADD_MSG', {
+            msg: SocketMsg.guess_1a2b(data.event.player, data.event.guess, data.event.a, data.event.b),
+            playerName: '系统',
+            messageType: 1
+          })
+        }
+      }
+    },
+    setFlip: function (a, b) {
+      let result = 10809
+      result = a * 1000 + result + b * 10
+      console.log(result)
+      this.$store.commit('SET_COUNT_NUM', result)
     }
   },
   computed: {
     ...mapState([
-      'room_id'
+      'room_id',
+      'player_name',
+      'sock'
     ])
+  },
+  created () {
+    this.initWebSocket()
   }
 }
 </script>

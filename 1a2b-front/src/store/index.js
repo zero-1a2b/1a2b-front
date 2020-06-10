@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {Config} from '../js/config'
+import {SocketMsg} from '../js/socket_msg'
 
 Vue.use(Vuex)
 
@@ -9,8 +11,10 @@ export const Store = new Vuex.Store({
     count_num: 1829,
     players: [],
     msgList: [],
+    msgCounter: 1,
     room_key: 0,
-    room_id: '114514'
+    room_id: 'null',
+    sock: null
   },
   getters: {
     PLAYER_NAME: state => {
@@ -46,13 +50,32 @@ export const Store = new Vuex.Store({
       state.players.push(payload)
     },
     ADD_MSG: (state, payload) => {
-      state.msgList.push(payload)
+      state.msgList.push(SocketMsg.chat(payload.msg, payload.playerName, state.msgCounter, payload.messageType))
+      state.msgCounter += 1
     },
     SET_ROOM_ID: (state, payload) => {
       state.room_id = payload
     },
     SET_ROOM_KEY: (state, payload) => {
       state.room_key = payload
+    },
+    CONNECT_SOCKET: (state, payload) => {
+      state.sock = new WebSocket(Config.room_socket_url(payload.id, payload.player_name))
+    },
+    DISCONNECT_SOCKET: (state, payload) => {
+      state.sock.close()
+    },
+    READY_STATE: (state, payload) => {
+      state.sock.send(SocketMsg.ready(payload.playerName))
+    },
+    START_STATE: (state, payload) => {
+      state.sock.send(SocketMsg.start())
+    },
+    GUESS_NUM: (state, payload) => {
+      state.sock.send(SocketMsg.guess(payload.num, payload.playerName))
+    },
+    BIND_ONMESSAGE: (state, payload) => {
+      state.sock.onmessage = payload
     }
   }
 })
