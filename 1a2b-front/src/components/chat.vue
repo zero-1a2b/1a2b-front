@@ -103,6 +103,9 @@ export default {
     height: 82%;
 }
 
+.filter .el-switch__label{
+    color: antiquewhite 
+    }
 .filter{
     float:right;
     display: block;

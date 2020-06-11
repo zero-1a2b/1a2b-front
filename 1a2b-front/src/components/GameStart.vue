@@ -1,7 +1,7 @@
 <template>
     <div class="game_start">
     <div id="game_title"> 1A2B</div>
-    <div id="game_logo">(这里放个zero娘的logo)</div>
+    <el-image class="game-logo" :src="logo" fit="fill"></el-image>
     <el-row>
       <el-button class="game_button" type="primary" round @click="click_start">开始游戏</el-button>
     </el-row>
@@ -30,7 +30,8 @@ export default {
   data () {
     return {
       rule_text: Config.rule_text,
-      choose_game: false
+      choose_game: false,
+      logo: require('../assets/avatar-in.png')
     }
   },
   methods: {
@@ -137,9 +138,10 @@ export default {
   border: 0;
 }
 
-#game_logo{
-  color: antiquewhite;
-  margin: 0 0 50px 0;
+.game-logo{
+  width: 150px;
+  height: 150px;
+  margin: 0 0 40px 0;
 }
 
 .el-message-box{
@@ -148,7 +150,7 @@ export default {
 
 #game_title{
   margin: auto;
-  padding: 100px;
+  padding: 50px;
   background-color: transparent;
   font-weight: normal;
   font-size :64px;
