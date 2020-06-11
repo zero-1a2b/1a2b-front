@@ -7,7 +7,7 @@
             active-text="仅显示系统聊天">
             </el-switch>
         <div class="message-list">
-            <el-scrollbar style="height:inherit;">
+            <el-scrollbar ref="chat_board" style="height:inherit;">
                 <ul class="msg-cont">
                 <li v-for="message in showList" :key="message.msg_index">
                     {{message.playerName + ' : ' + message.msg}}
@@ -36,10 +36,10 @@ export default {
     },
     methods: {
         sendMsg: function(){
-            if (this.guess_reg.exec(this.msg) && this.guess_state){
+            this.chatMsg()
+            if (this.guess_reg.exec(this.msg) !== null && this.guess_state){
                 this.guessNum()
             }
-            this.chatMsg()
             this.msg = ''
         },
         guessNum: function (){
@@ -53,6 +53,9 @@ export default {
                 msg: this.msg,
                 playerName: this.player_name
             })
+        },
+        scrollDown: function() {
+            this.$refs.chat_board.wrap.scrollTop = this.$refs.chat_board.wrap.scrollHeight
         }
     },
     mounted(){
@@ -79,6 +82,11 @@ export default {
             }else{
                 return this.msgList
             }
+        }
+    },
+    watch: {
+        showList: function () {
+            this.$nextTick(this.scrollDown)
         }
     }
 }

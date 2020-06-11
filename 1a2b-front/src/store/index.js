@@ -9,12 +9,15 @@ export const Store = new Vuex.Store({
   state: {
     player_name: '',
     count_num: 1829,
-    players: [],
-    guesser: 0,
+    playersReady: [],
+    gamePlayers: [],
+    max_player: Config.max_player,
+    guesser: -10,
     msgList: [],
     msgCounter: 1,
     room_key: 0,
     room_id: 'null',
+    game_started: false,
     sock: null
   },
   getters: {
@@ -37,7 +40,10 @@ export const Store = new Vuex.Store({
       return state.room_key
     },
     guess_state: state => {
-      return state.players[state.guesser] === state.player_name
+      return state.gamePlayers[state.guesser] === state.player_name
+    },
+    current_player: state => {
+      return state.gamePlayers[state.guesser]
     }
   },
   mutations: {
@@ -50,12 +56,35 @@ export const Store = new Vuex.Store({
     SET_MSGLIST: (state, payload) => {
       state.msgList = payload
     },
-    ADD_PLAYERS: (state, payload) => {
-      state.players.push(payload)
+    ADD_PLAYER: (state, payload) => {
+      state.playersReady.push({
+        name: payload.name,
+        is_ready: 0
+      })
+    },
+    SET_READY_PLAYERS: (state, payload) => {
+      state.playersReady = payload
+    },
+    SET_GAME_PLAYERS: (state, payload) => {
+      state.gamePlayers = payload
+    },
+    PLAYER_READY: (state, payload) => {
+      let index = state.playersReady.findIndex(e => e.name === payload.name)
+      state.playersReady[index].is_ready = 1
+    },
+    PLAYER_UNREADY: (state, payload) => {
+      let index = state.playersReady.findIndex(e => e.name === payload.name)
+      state.playersReady[index].is_ready = 0
+    },
+    REMOVE_PLAYER: (state, payload) => {
+      state.playersReady = state.playersReady.filter(({name}) => name !== payload.name)
     },
     ADD_MSG: (state, payload) => {
       state.msgList.push(SocketMsg.chat(payload.msg, payload.playerName, state.msgCounter, payload.messageType))
       state.msgCounter += 1
+    },
+    set_MSG_COUNTER: (state, payload) => {
+      state.msgCounter = payload
     },
     SET_ROOM_ID: (state, payload) => {
       state.room_id = payload
@@ -77,9 +106,13 @@ export const Store = new Vuex.Store({
     },
     START_STATE: (state, payload) => {
       state.sock.send(SocketMsg.start())
+      state.game_started = true
     },
     GUESS_NUM: (state, payload) => {
       state.sock.send(SocketMsg.guess(payload.num, payload.playerName))
+    },
+    INC_GUESSER: (state) => {
+      state.guesser = (state.guesser + 1) % state.gamePlayers.length
     },
     BIND_ONMESSAGE: (state, payload) => {
       state.sock.onmessage = payload
@@ -87,8 +120,18 @@ export const Store = new Vuex.Store({
     SET_GUESSER: (state, payload) => {
       state.guesser = payload
     },
+    SET_GAME_STATE: (state, payload) => {
+      state.guesser = payload.guesser
+      state.gamePlayers = payload.players
+    },
     SEND_MESSAGE: (state, payload) => {
       state.sock.send(SocketMsg.chat_socket(payload.msg, payload.playerName))
+    },
+    GET_GAME_STATE: (state, payload) => {
+      state.sock.send(SocketMsg.game_state())
+    },
+    GAME_STARTED: (state, payload) => {
+      state.game_started = true
     }
   }
 })

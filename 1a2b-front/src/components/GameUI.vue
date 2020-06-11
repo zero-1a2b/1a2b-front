@@ -26,7 +26,7 @@
 import ChatBoard from './chat'
 import FlipBoard from './flip'
 import StatusBoard from './playerStatus'
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import {Config} from '../js/config'
 import {SocketMsg} from '../js/socket_msg'
 export default {
@@ -55,38 +55,134 @@ export default {
       })
     },
     initWebSocket: function () {
+      // init  player list before init websocket
       this.$store.commit('CONNECT_SOCKET', {id: this.room_id, player_name: this.player_name})
       this.$store.commit('BIND_ONMESSAGE', this.onMessageCallback)
+    },
+    initRoom: function () {
+      this.$store.commit('SET_READY_PLAYERS', [])
+      this.$store.commit('SET_GAME_PLAYERS', [])
+      this.$store.commt('SET_GUESSER', -1)
+      this.$store.commit('SET_MSG_COUNTER')
+      this.$store.commit('SET_COUNT_NUM', 1829)
+    },
+    reset_guesser: function () {
+      this.$store.commit('SET_GUESSER', 0)
+    },
+    start_event: function (data) {
+      // Start Event
+      this.$store.commit('GET_GAME_STATE')
+      this.$store.commit('ADD_MSG', {
+        msg: '游戏开始,每位玩家只有20s的时间猜数字',
+        playerName: '系统',
+        messageType: 1
+      })
+    },
+    join_event: function (data) {
+      this.$store.commit('ADD_PLAYER', {
+        name: data.player
+      })
+    },
+    ready_event: function (data) {
+      this.$store.commit('PLAYER_READY', {
+        name: data.player
+      })
+    },
+    unready_event: function (data) {
+      this.$store.commit('PLAYER_UNREADY', {
+        name: data.player
+      })
+    },
+    left_event: function (data) {
+      this.$store.commit('REMOVE_PLAYER', {
+        name: data.player
+      })
+    },
+    chat_event: function (data) {
+      // Chat Event
+      this.$store.commit('ADD_MSG', {
+        msg: data.msg.msg,
+        playerName: data.msg.name,
+        messageType: 0
+      })
+    },
+    guess_num: function (data) {
+      this.setFlip(data.event.a, data.event.b)
+      this.$store.commit('ADD_MSG', {
+        msg: SocketMsg.guess_1a2b(data.event.player, data.event.guess, data.event.a, data.event.b),
+        playerName: '系统',
+        messageType: 1
+      })
+    },
+    timeout: function (data) {
+      this.$store.commit('ADD_MSG', {
+        msg: '游戏超时，有请下一位',
+        playerName: '系统',
+        messageType: 1
+      })
+    },
+    next_player: function (data) {
+      this.$store.commit('INC_GUESSER')
+    },
+    game_event: function (data) {
+      switch (data.event.type) {
+        case 'guess':
+          this.guess_num(data)
+          break
+        case 'timeout':
+          this.timeout(data)
+          break
+      }
+      this.next_player(data)
+    },
+    finish_game: function (data) {
+      this.$store.commit('ADD_MSG', {
+        msg: '游戏结束，请大家退出游戏房间',
+        playerName: '系统',
+        messageType: 1
+      })
+    },
+    update_game_state: function (data) {
+      this.$store.commit('SET_GAME_STATE', {
+        guesser: data.resp.game.guesser,
+        players: data.resp.game.players
+      })
+      this.$nextTick(this.reset_guesser)
     },
     onMessageCallback: function (event) {
       let data = JSON.parse(event.data)
       console.log(data)
-      // Start Event
-      if (data.type === 'game_started') {
-        this.$store.commit('ADD_MSG', {
-          msg: '游戏开始,每位玩家只有60s的时间猜数字',
-          playerName: '系统',
-          messageType: 1
-        })
-      }
-      // Chat Event
-      if (data.type === 'chat') {
-        this.$store.commit('ADD_MSG', {
-          msg: data.msg.msg,
-          playerName: data.msg.name,
-          messageType: 0
-        })
-      }
       // Game Event
-      if (data.type === 'game') {
-        if (data.event.type === 'guess') {
-          this.setFlip(data.event.a, data.event.b)
-          this.$store.commit('ADD_MSG', {
-            msg: SocketMsg.guess_1a2b(data.event.player, data.event.guess, data.event.a, data.event.b),
-            playerName: '系统',
-            messageType: 1
-          })
+      if (data.type === undefined && data.resp !== null) {
+        if (data.resp.type === 'get_game_state') {
+          this.update_game_state(data)
         }
+      }
+      switch (data.type) {
+        case 'game':
+          this.game_event(data)
+          break
+        case 'chat':
+          this.chat_event(data)
+          break
+        case 'game_started':
+          this.start_event(data)
+          break
+        case 'ready':
+          this.ready_event(data)
+          break
+        case 'unready':
+          this.unready_event(data)
+          break
+        case 'join':
+          this.join_event(data)
+          break
+        case 'left':
+          this.left_event(data)
+          break
+        case 'game_finished':
+          this.finish_game(data)
+          break
       }
     },
     setFlip: function (a, b) {
@@ -100,11 +196,26 @@ export default {
     ...mapState([
       'room_id',
       'player_name',
-      'sock'
+      'sock',
+      'guesser',
+      'gamePlayers'
+    ]),
+    ...mapGetters([
+      'current_player'
     ])
   },
-  created () {
+  watch: {
+    guesser: function () {
+      this.$store.commit('ADD_MSG', {
+        msg: SocketMsg.guess_player(this.current_player),
+        playerName: '系统',
+        messageType: 1
+      })
+    }
+  },
+  mounted () {
     this.initWebSocket()
+    this.initRoom()
   }
 }
 </script>

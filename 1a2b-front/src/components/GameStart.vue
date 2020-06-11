@@ -9,7 +9,7 @@
       <el-button  class="game_button" type="warning" round @click="show_rule" >规则介绍</el-button>
     </el-row>
     <el-row>
-      <el-button class="game_button" type="info" round @click="game_set">游戏设置 </el-button>
+      <el-button class="game_button" type="info" round @click="game_set(null)">游戏设置 </el-button>
     </el-row>
     <el-dialog title="选择游戏" :visible.sync="choose_game" width="80%" class="choose-game">
       <span>新建一个游戏或者通过房间号加入游戏</span>

@@ -40,7 +40,7 @@ export default {
 <style lang="scss" >
 $digitHeight : 70px;
 $speed       : .5s;
-$baseColor   : #55b9f3;
+$baseColor   : #45a9bc;
 $textColor   : white;
 $countArr    : ' 0 1 2 3 4 5 6 7 A B ';
 
@@ -113,8 +113,8 @@ $countArr    : ' 0 1 2 3 4 5 6 7 A B ';
   border-radius: 16px; 
   // box-shadow:0 5px 12px #111, 0 0 8px 0 rgba(255,255,255,.1) inset;
   
-  background: linear-gradient(330deg, scale-color($baseColor, $lightness: 16%, $saturation: 10% ), 
-                                      scale-color($baseColor, $lightness: -14%, $saturation:-20% ));
+  background: linear-gradient(330deg, scale-color($baseColor, $lightness: 50%, $saturation: 30% ), 
+                                      scale-color($baseColor, $lightness: -20%, $saturation:-10% ));
   
   box-shadow:  -20px -20px 60px scale-color($baseColor, $lightness: -25%, $saturation:-30% ), 
                20px 20px 60px scale-color($baseColor, $lightness: 25%, $saturation: 30% );
@@ -122,8 +122,8 @@ $countArr    : ' 0 1 2 3 4 5 6 7 A B ';
   b{
     background: scale-color($baseColor, $lightness: -10%, $saturation: -10% );
     
-    background: linear-gradient(-30deg, scale-color($baseColor, $lightness: 8%, $saturation: 5% ), 
-                                        scale-color($baseColor, $lightness: -20%, $saturation:-22% ));
+    background: linear-gradient(-30deg, scale-color($baseColor, $lightness: 12%, $saturation: 5% ), 
+                                        scale-color($baseColor, $lightness: -10%, $saturation:-22% ));
     
     color: $textColor;
   }

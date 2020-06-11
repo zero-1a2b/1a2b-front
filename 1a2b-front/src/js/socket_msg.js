@@ -47,6 +47,9 @@ var SocketMsg = {
     num = num.join('')
     return '玩家 ' + playerName + ' 的数字：' + num + '. 结果：  ' + a + 'A ' + b + 'B'
   },
+  guess_player: function (playerName) {
+    return '现在轮到 ' + playerName + ' 猜数字'
+  },
   chat_socket: function (msg, playerName) {
     let result = {
       'type': 'chat',
@@ -54,6 +57,12 @@ var SocketMsg = {
         'name': playerName,
         'msg': msg
       }
+    }
+    return JSON.stringify(result)
+  },
+  game_state: function () {
+    let result = {
+      'type': 'get_game_state'
     }
     return JSON.stringify(result)
   }

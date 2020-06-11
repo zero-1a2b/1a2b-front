@@ -4,38 +4,32 @@
             <el-tooltip effect="dark" :content="player.player_name" placement="top-start">
             <el-avatar shape="circle" :size="50" :src="avatar_type[player.is_ready]"></el-avatar>
             </el-tooltip>
-            <span class="player-name" style="display: block;"> {{player.player_name}} </span>
+            <div class="player-name" > {{player.player_name}} </div>
         </div>
         <div class="button-status">
             <el-button ref="start_button" type="success" round :disabled="start_status" @click.native="clickStart">开始</el-button>
-            <el-button ref="ready_button" :type="ready.pattern" round @click.native="clickReady">{{ready.name}}</el-button>
+            <el-button ref="ready_button" :type="ready.pattern"  @click.native="clickReady">{{ready.name}}</el-button>
         </div>
     </div>
 </template>
 
 <script>
-import {Config} from '../js/config'
 import {mapState} from 'vuex'
 
 export default {
 /* eslint-disable */
     data(){
         return{
-            max_player: Config.max_player,
-            current_player: 1,
             avatar_type: [
-                require('../assets/avatar.png'),
-                require('../assets/avatar.png')
+                require('../assets/avatar-in.png'),
+                require('../assets/avatar-ready.png'),
+                require('../assets/avatar-default.png'),
             ],
             ready:{
                 is_ready:true,
                 name: '准备',
                 pattern: 'primary',
             },
-            players:[{
-                name: 'see',
-                is_ready:1
-            }]
         }
     },
     methods:{
@@ -61,20 +55,23 @@ export default {
     computed: {
     ...mapState([
       'room_id',
-      'player_name'
+      'player_name',
+      'playersReady',
+      'max_player',
+      'game_started'
     ]),
         start_status: function(){
             var result = 0;
-            for( var player in this.players ){
-                result += this.players[player].is_ready;
+            for( var player in this.playersReady ){
+                result += this.playersReady[player].is_ready;
             }
-            return (result == this.current_player)? false: true;
+            return (result == this.playersReady.length)? false: true;
         },
         show_players_list: function() {
             let result =[]
             for(var i=0; i < this.max_player; i++){
-                var name = (this.players[i] == null)? 'NULL' :this.players[i].name
-                var ready_flag = (this.players[i] == null)? 0 : this.players[i].is_ready
+                var name = (this.playersReady[i] == null)? 'NULL' :this.playersReady[i].name
+                var ready_flag = (this.playersReady[i] == null)? 2 : this.playersReady[i].is_ready
                 result.push({
                     player_num: i,
                     player_name: name,
@@ -94,6 +91,13 @@ export default {
     display: inline-block;
     height: 50%;
     width: 24%;
+}
+
+.player-name{
+    color: antiquewhite;
+    white-space:nowrap;
+    overflow: hidden; 
+    width: 100%;
 }
 
 .button-status{
